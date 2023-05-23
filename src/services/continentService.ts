@@ -13,4 +13,17 @@ export default {
   getAll: async (): Promise<Continent[]> => {
     return await continentRepository.find();
   },
+
+  /**
+   * Create a new continent
+   * @param code continent param code
+   * @param name continent param name
+   * @returns the created continent
+   */
+  create: async (code: string, name: string): Promise<Continent> => {
+    const newContinent = new Continent();
+    newContinent.code = code;
+    newContinent.name = name;
+    return await continentRepository.save(newContinent);
+  },
 };

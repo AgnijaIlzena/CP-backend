@@ -23,4 +23,26 @@ export class CountryResolver {
     const country = await countryService.getByCode(code);
     return country;
   }
+
+  @Query(() => [Country])
+  async getCountriesByContinentCode(
+    @Arg("continentCode") continentCode: string
+  ): Promise<Country[]> {
+    return await countryService.getByContinentCode(continentCode);
+  }
+
+  @Mutation(() => Country)
+  async createCountryWithContinent(
+    @Arg("code") code: string,
+    @Arg("name") name: string,
+    @Arg("emoji") emoji: string,
+    @Arg("continentCode") continentCode: string
+  ): Promise<Country> {
+    return await countryService.createContCountry(
+      code,
+      name,
+      emoji,
+      continentCode
+    );
+  }
 }

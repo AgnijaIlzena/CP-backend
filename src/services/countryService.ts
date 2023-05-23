@@ -1,9 +1,12 @@
 import Country from "../entity/Country";
+import Continent from "../entity/Continent";
 import { dataSource } from "../tools/utils";
 import { Repository } from "typeorm";
 
 const countryRepository: Repository<Country> =
   dataSource.getRepository(Country);
+const continentRepository: Repository<Continent> =
+  dataSource.getRepository(Continent);
 
 export default {
   /**
@@ -41,5 +44,44 @@ export default {
   getByCode: async (code: string): Promise<Country | null> => {
     const country = await countryRepository.findOneBy({ code });
     return country || null;
+  },
+
+  /**
+   *
+   */
+  getByContinentCode: async (continentCode: string): Promise<Country[]> => {
+    return await countryRepository.find({
+      relations: ["continent"],
+      where: {
+        continent: {
+          code: continentCode,
+        },
+      },
+    });
+  },
+
+  /**
+   * Create a new country and associate it with a continent
+   */
+  createContCountry: async (
+    code: string,
+    name: string,
+    emoji: string,
+    continentCode: string
+  ): Promise<Country> => {
+    const country = new Country();
+    country.code = code;
+    country.name = name;
+    country.emoji = emoji;
+
+    const continent = await continentRepository.findOneBy({
+      code: continentCode,
+    });
+    if (!continent) {
+      throw new Error(`Continent with code ${continentCode} not found`);
+    }
+
+    country.continent = continent;
+    return await countryRepository.save(country);
   },
 };

@@ -9,4 +9,12 @@ export class ContinentResolver {
   async getAllContinents(): Promise<Continent[]> {
     return await continentService.getAll();
   }
+
+  @Mutation(() => Continent)
+  async createContinent(
+    @Arg("code") code: string,
+    @Arg("name") name: string
+  ): Promise<Continent> {
+    return await continentService.create(code, name);
+  }
 }
